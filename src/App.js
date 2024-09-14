@@ -7,6 +7,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import BirdTracking from "./pages/BirdTracking";
 import Login from "./pages/Login";
+import BirdForum from "./pages/BirdForum";  // Import the new BirdForum component
 
 const authUrl = process.env.REACT_APP_PROPELAUTH_AUTH_URL;
 
@@ -16,7 +17,7 @@ function App() {
   }
 
   return (
-    <AuthProvider 
+    <AuthProvider
       authUrl={authUrl}
       onError={(error) => {
         console.error("PropelAuth Error:", error);
@@ -31,6 +32,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/bird-tracking" element={<BirdTracking />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/bird-forum" element={<BirdForum />} />  {/* Add this new route */}
           </Routes>
         </div>
       </Router>

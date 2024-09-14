@@ -7,8 +7,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
-// Import the logo image
-import aviateLogo from '../assets/images/aviate4.png';  // Adjust the path as necessary
+import aviateLogo from '../assets/images/aviate4.png';
 
 function NavBar() {
   const location = useLocation();
@@ -58,7 +57,8 @@ function NavBar() {
             { name: "Home", path: "/" },
             { name: "About Us", path: "/about" },
             { name: "Contact Us", path: "/contact" },
-            { name: "Bird Tracking", path: "/bird-tracking" }
+            { name: "Bird Tracking", path: "/bird-tracking" },
+            { name: "Bird Forum", path: "/bird-forum" }  // Add this new link
           ].map((item) => (
             <Button
               key={item.name}
