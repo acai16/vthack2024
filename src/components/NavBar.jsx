@@ -58,7 +58,7 @@ function NavBar() {
             { name: "About Us", path: "/about" },
             { name: "Contact Us", path: "/contact" },
             { name: "Bird Tracking", path: "/bird-tracking" },
-            { name: "Bird Forum", path: "/bird-forum" }  // Add this new link
+            { name: "Bird Book", path: "/bird-forum" }  // Add this new link
           ].map((item) => (
             <Button
               key={item.name}

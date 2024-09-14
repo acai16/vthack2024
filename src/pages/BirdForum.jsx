@@ -281,7 +281,7 @@ function BirdForum() {
                         width: '100%',        // Ensure the Typography takes full width
                     }}
 >
-                  Bird Forum
+                  Bird Book
                 </Typography>
                 
                 <Typography variant="h5" component="h2" gutterBottom align="center" sx={{ mb: 4 }} color="white">
