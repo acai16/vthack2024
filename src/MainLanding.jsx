@@ -21,6 +21,10 @@ function MainLanding() {
     navigate('/about');
   };
 
+  const handleGetStarted = () => {
+    navigate('/bird-tracking');
+  };
+
   return (
     <Box component="header" position="relative" overflow="hidden">
       {/* Video background */}
@@ -84,6 +88,7 @@ function MainLanding() {
               <Button 
                 variant="contained" 
                 color="primary"
+                onClick={handleGetStarted}
                 sx={{
                   backgroundColor: 'white',
                   color: 'primary.main',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -7,13 +7,17 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 function NavBar() {
+  const location = useLocation();
+
+  const isOnBirdTrackingPage = location.pathname === '/bird-tracking';
+
   return (
     <AppBar 
       position="fixed" 
       sx={{ 
-        background: 'transparent', 
+        background: isOnBirdTrackingPage ? 'rgba(211, 211, 211, 0.7)' : 'transparent', 
         boxShadow: 'none',
-        color: 'white'
+        color: isOnBirdTrackingPage ? 'black' : 'white'
       }}
     >
       <Toolbar>
@@ -34,7 +38,8 @@ function NavBar() {
           {[
             { name: "Home", path: "/" },
             { name: "About Us", path: "/about" },
-            { name: "Contact Us", path: "/contact" }  // This line is already correct
+            { name: "Contact Us", path: "/contact" },
+            { name: "Bird Tracking", path: "/bird-tracking" }
           ].map((item) => (
             <Button
               key={item.name}
@@ -43,7 +48,7 @@ function NavBar() {
               sx={{ 
                 color: 'inherit',
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                  backgroundColor: isOnBirdTrackingPage ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'
                 }
               }}
             >
@@ -56,7 +61,7 @@ function NavBar() {
           sx={{ 
             display: { md: 'none' },
             '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              backgroundColor: isOnBirdTrackingPage ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'
             }
           }}
         >
