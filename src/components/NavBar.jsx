@@ -7,6 +7,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
+// Import the logo image
+import aviateLogo from '../assets/images/aviate4.png';  // Adjust the path as necessary
+
 function NavBar() {
   const location = useLocation();
   const { isLoggedIn } = useAuthInfo();
@@ -22,19 +25,34 @@ function NavBar() {
       }}
     >
       <Toolbar>
-        <Typography
-          component={Link}
-          to="/"
-          variant="h6"
-          sx={{
-            flexGrow: 1,
-            textDecoration: 'none',
-            color: 'inherit',
-            fontWeight: 'bold'
-          }}
-        >
-          Aviate.ai
-        </Typography>
+        {isOnBirdTrackingPage ? (
+          <Box
+            component={Link}
+            to="/"
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              alignItems: 'center',
+              textDecoration: 'none',
+            }}
+          >
+            <img src={aviateLogo} alt="Aviate.ai Logo" style={{ height: '40px' }} />
+          </Box>
+        ) : (
+          <Typography
+            component={Link}
+            to="/"
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              textDecoration: 'none',
+              color: 'inherit',
+              fontWeight: 'bold'
+            }}
+          >
+            Aviate.ai
+          </Typography>
+        )}
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {[
             { name: "Home", path: "/" },
