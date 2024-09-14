@@ -94,7 +94,7 @@ function BirdTracking() {
       };
 
       mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/mp3' });
         // downloadBlob(audioBlob); // this is where is downloads tos
         
         const reader = new FileReader();
@@ -117,7 +117,7 @@ function BirdTracking() {
   };
 
   function sendBase64BlobToFlask(blob) {
-    const url = "http://localhost:5000/api/getblob";
+    const url = "http://localhost:5001/api/getblob";
     try {
       const response = fetch (url, 
       {
@@ -147,7 +147,7 @@ function BirdTracking() {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = url;
-    a.download = `bird_recording_${new Date().toISOString()}.wav`;
+    a.download = `bird_recording_${new Date().toISOString()}.mp3`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
