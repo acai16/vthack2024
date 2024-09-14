@@ -16,7 +16,7 @@ import { useTheme } from "@mui/material/styles"
 
 // Import your video file
 import forestVideo from "../assets/background/Aviate.mov";  // Adjust the path as necessary
-
+import News1Image from "../assets/images/News1.png"
 function About() {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
@@ -37,10 +37,11 @@ function About() {
 
   const newsArticles = [
     {
-      title: "Aviate Launches New AI-Powered Feature",
+      title: "Birds & Biodiversity",
       date: "June 15, 2024",
       summary: "Aviate introduces a groundbreaking AI-powered feature that promises to transform user productivity.",
-      imageUrl: "/api/placeholder/400/200"
+      imageUrl: News1Image,
+      link: "https://global.canon/en/environment/bird-branch/bird-column/biodiversity2/index.html"
     },
     {
       title: "Aviate Secures Series B Funding",
@@ -137,14 +138,14 @@ function About() {
 
           {/* News Articles */}
           <Typography
-                variant="h2"
-                color="white"
-                mb={3}
-                sx={{
-                  fontSize: isMdDown ? "3rem" : "4rem",
-                  fontWeight: 700,
-                }}
-              >
+            variant="h2"
+            color="white"
+            mb={3}
+            sx={{
+              fontSize: isMdDown ? "3rem" : "4rem",
+              fontWeight: 700,
+            }}
+          >
             Latest News
           </Typography>
           <Grid container spacing={3}>
@@ -156,20 +157,23 @@ function About() {
                     flexDirection: 'column', 
                     height: '100%',
                     backgroundColor: transparentWhite,
-                    borderRadius: '16px', // Increased border radius for more rounded corners
-                    overflow: 'hidden', // Ensure content doesn't overflow rounded corners
+                    borderRadius: '16px',
+                    overflow: 'hidden',
                   }}
                 >
                   <CardMedia
                     component="img"
-                    height="140"
+                    sx={{
+                      height: 250,  // Fixed height for all images
+                      objectFit: 'cover',  // Ensure the image covers the area without distortion
+                    }}
                     image={article.imageUrl}
                     alt={article.title}
                   />
                   <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {article.title}
-                    </Typography>
+                  <Typography gutterBottom variant="h6" component="div">
+                    {article.title}
+                  </Typography>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                       {article.date}
                     </Typography>
@@ -177,7 +181,15 @@ function About() {
                       {article.summary}
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                      <Button size="small" color="primary">Read More</Button>
+                      <Button 
+                        size="small" 
+                        color="primary"
+                        href={article.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Read More
+                      </Button>
                     </Box>
                   </CardContent>
                 </Card>
@@ -189,5 +201,6 @@ function About() {
     </Box>
   );
 }
+
 
 export default About;

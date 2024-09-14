@@ -83,8 +83,7 @@ function MainLanding() {
                   fontWeight: 400,
                 }}
               >
-                The time is now for it be okay to be great. People in this world shun people for being
-                nice.
+                Discover Nature’s Voices, Protect Their Habitats.
               </Typography>
               <Stack direction="row" spacing={2}>
                 <Button
