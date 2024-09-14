@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 
 function NavBar() {
   const location = useLocation();
-
   const isOnBirdTrackingPage = location.pathname === '/bird-tracking';
 
   return (
@@ -34,7 +33,7 @@ function NavBar() {
         >
           Aviate.ai
         </Typography>
-        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {[
             { name: "Home", path: "/" },
             { name: "About Us", path: "/about" },
@@ -55,18 +54,22 @@ function NavBar() {
               {item.name}
             </Button>
           ))}
+          <Button
+            color="inherit"
+            component={Link}
+            to="/login"
+            variant="outlined"
+            sx={{ 
+              ml: 2,
+              border: '1px solid',
+              '&:hover': {
+                backgroundColor: isOnBirdTrackingPage ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+          >
+            Login
+          </Button>
         </Box>
-        <Button
-          color="inherit"
-          sx={{ 
-            display: { md: 'none' },
-            '&:hover': {
-              backgroundColor: isOnBirdTrackingPage ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)'
-            }
-          }}
-        >
-          Menu
-        </Button>
       </Toolbar>
     </AppBar>
   );
