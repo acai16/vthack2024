@@ -11,11 +11,15 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles"
 
 // Import your video file
 import forestVideo from "../assets/background/Aviate.mov";  // Adjust the path as necessary
 
 function About() {
+  const theme = useTheme();
+  const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
   const accordionData = [
     {
       title: "Our Mission",
@@ -89,7 +93,15 @@ function About() {
         }}
       >
         <Container>
-          <Typography variant="h2" gutterBottom color="white">
+        <Typography
+                variant="h1"
+                color="white"
+                mb={3}
+                sx={{
+                  fontSize: isMdDown ? "3rem" : "4rem",
+                  fontWeight: 700,
+                }}
+              >
             About Us
           </Typography>
           <Typography variant="body1" color="white" mb={4}>
@@ -124,7 +136,15 @@ function About() {
           </Grid>
 
           {/* News Articles */}
-          <Typography variant="h3" gutterBottom color="white">
+          <Typography
+                variant="h2"
+                color="white"
+                mb={3}
+                sx={{
+                  fontSize: isMdDown ? "3rem" : "4rem",
+                  fontWeight: 700,
+                }}
+              >
             Latest News
           </Typography>
           <Grid container spacing={3}>

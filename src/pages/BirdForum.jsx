@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthInfo } from '@propelauth/react';
+import { useAuthInfo, useRedirectFunctions } from '@propelauth/react';
 import { DynamoDB } from 'aws-sdk';
-import Draggable from 'react-draggable';
+// import Draggable from 'react-draggable';
 import { Box, Button, Grid, Paper, Typography, Container, TextField, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
+import { useTheme } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery";
 import forestVideo from "../assets/background/Aviate.mov";
 // Configure AWS
 const dynamoDB = new DynamoDB.DocumentClient({
@@ -17,10 +18,13 @@ const dynamoDB = new DynamoDB.DocumentClient({
 });
 
 function BirdForum() {
+    const theme = useTheme();
+    const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
     const { user, isLoggedIn } = useAuthInfo();
+    const { redirectToLoginPage } = useRedirectFunctions();
     const [photos, setPhotos] = useState([]);
     const [captions, setCaptions] = useState({});
-  
+    
     useEffect(() => {
       if (isLoggedIn) {
         fetchPhotos();
@@ -157,8 +161,77 @@ function BirdForum() {
     };
   
     if (!isLoggedIn) {
-      return <Box>Please log in to access the Bird Forum.</Box>;
-    }
+        return (
+          <Box component="div" position="relative" overflow="hidden" minHeight="100vh">
+            {/* Video background */}
+            <Box
+              component="video"
+              src={forestVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                zIndex: -1,
+              }}
+            />
+            
+            {/* Content overlay */}
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              minHeight="100vh"
+              position="relative"
+              zIndex={1}
+              sx={{
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                py: 4,
+              }}
+            >
+              <Container>
+                <Box sx={{ py: 4, textAlign: 'center' }}>
+                  <Typography
+                    variant="h1"
+                    color="white"
+                    mb={3}
+                    sx={{
+                      fontSize: isMdDown ? "3rem" : "4rem",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Bird Forum
+                  </Typography>
+                  <Typography variant="h5" color="white" mb={4}>
+                    Please log in to access the Bird Forum
+                  </Typography>
+                  <Button 
+                    variant="contained" 
+                    size="large" 
+                    onClick={redirectToLoginPage}
+                    sx={{
+                      mt: 2,
+                      backgroundColor: 'white',
+                      color: 'black',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      },
+                    }}
+                  >
+                    Go to Login Page
+                  </Button>
+                </Box>
+              </Container>
+            </Box>
+          </Box>
+        );
+      }
   
     return (
         <Box component="div" position="relative" overflow="hidden" minHeight="100vh">
@@ -197,7 +270,17 @@ function BirdForum() {
           >
             <Container maxWidth="lg">
               <Box sx={{ py: 4 }}>
-                <Typography variant="h2" component="h1" gutterBottom align="center" color="white">
+              <Typography
+                    variant="h1"
+                    color="white"
+                    mb={3}
+                    sx={{
+                        fontSize: isMdDown ? "3rem" : "4rem",
+                        fontWeight: 700,
+                        textAlign: 'center',  // Center the text
+                        width: '100%',        // Ensure the Typography takes full width
+                    }}
+>
                   Bird Forum
                 </Typography>
                 

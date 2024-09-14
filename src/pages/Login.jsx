@@ -2,8 +2,12 @@ import React from 'react';
 import { useRedirectFunctions, useAuthInfo, useLogoutFunction } from '@propelauth/react';
 import { Box, Button, Typography, Container, CircularProgress } from '@mui/material';
 import forestVideo from "../assets/background/Aviate.mov";
+import { useTheme } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 function Login() {
+  const theme = useTheme();
+  const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
   const { redirectToLoginPage, redirectToSignupPage } = useRedirectFunctions();
   const { user, isLoggedIn, loading, error } = useAuthInfo();
   const logoutFunction = useLogoutFunction();
@@ -20,7 +24,15 @@ function Login() {
     if (isLoggedIn && user) {
       return (
         <>
-          <Typography variant="h2" gutterBottom color="white">
+          <Typography
+                variant="h1"
+                color="white"
+                mb={3}
+                sx={{
+                  fontSize: isMdDown ? "3rem" : "4rem",
+                  fontWeight: 700,
+                }}
+              >
             Welcome, {user.email}!
           </Typography>
           <Button variant="contained" color="primary" onClick={logoutFunction}>
@@ -32,7 +44,15 @@ function Login() {
 
     return (
       <>
-        <Typography variant="h2" gutterBottom color="white">
+        <Typography
+                variant="h1"
+                color="white"
+                mb={3}
+                sx={{
+                  fontSize: isMdDown ? "3rem" : "4rem",
+                  fontWeight: 700,
+                }}
+              >
           Welcome to Aviate.ai
         </Typography>
         <Box>

@@ -7,11 +7,14 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-
+import { useTheme } from "@mui/material/styles"
+import useMediaQuery from "@mui/material/useMediaQuery";
 // Import your video file
 import forestVideo from "../assets/background/Aviate.mov";  // Adjust the path as necessary
 
 function Contact() {
+  const theme = useTheme();
+  const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -86,7 +89,15 @@ function Contact() {
         }}
       >
         <Container maxWidth="md">
-          <Typography variant="h2" gutterBottom color="white">
+        <Typography
+                variant="h1"
+                color="white"
+                mb={3}
+                sx={{
+                  fontSize: isMdDown ? "3rem" : "4rem",
+                  fontWeight: 700,
+                }}
+              >
             Contact Us
           </Typography>
           <Typography variant="body1" color="white" mb={4}>
