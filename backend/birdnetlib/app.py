@@ -2,6 +2,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from birdnet_service import Bird_Analyzer
 
 app = Flask(__name__)
 CORS(app)
@@ -18,12 +19,19 @@ def index():
 @app.route('/api/getblob', methods = ["POST"])
 def retrieve_blob():
     global blob
-    data = request.json
+    data = request.json 
     try:
         blob = data.get('blob')
         assert blob is not None
+        base64_string = blob.split(',', 1)[1]
+        print(f"Blob acquired: {base64_string}")
+        b_a = Bird_Analyzer()
+        highest_bird = b_a.analyze_from_base64(base64_string)
+        print("Highest bird:", highest_bird)
+        
+        return jsonify(message="Blob successfully received and stored")
     except:
-        raise ValueError("Error: Blob does not exist")
+        raise ValueError("Error: Something wrong with blob unlucky gg go next")
 
 #localhost:5000
 @app.route('/api/analyze', methods=['GET'])
