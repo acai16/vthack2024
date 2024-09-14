@@ -46,7 +46,7 @@ function BirdTracking() {
         'tileSize': 512,
         'maxzoom': 14
       });
-      
+
       map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
 
       map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -96,14 +96,24 @@ function BirdTracking() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder.current = new MediaRecorder(stream);
-      
+
       mediaRecorder.current.ondataavailable = (event) => {
         audioChunks.current.push(event.data);
       };
 
       mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
-        downloadBlob(audioBlob);
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/mp3' });
+        // downloadBlob(audioBlob); // this is where is downloads tos
+
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const base64String = reader.result.split(',')[1];
+          sendBase64BlobToFlask(base64String)
+        }
+
+        reader.readAsDataURL(audioBlob);
+
         audioChunks.current = [];
       };
 
@@ -114,6 +124,24 @@ function BirdTracking() {
     }
   };
 
+  function sendBase64BlobToFlask(blob) {
+    const url = "http://localhost:5001/api/getblob";
+    try {
+      const response = fetch(url,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ blob })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data));
+    }
+    catch (error) {
+      console.error('Error posting data:', error);
+    }
+  }
   const stopRecording = () => {
     if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
       mediaRecorder.current.stop();
@@ -127,15 +155,15 @@ function BirdTracking() {
     document.body.appendChild(a);
     a.style = "display: none";
     a.href = url;
-    a.download = `bird_recording_${new Date().toISOString()}.wav`;
+    a.download = `bird_recording_${new Date().toISOString()}.mp3`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
   const startCamera = async () => {
     try {
-      const videoStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
+      const videoStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
       });
       setStream(videoStream);
       if (videoRef.current) {
@@ -186,8 +214,8 @@ function BirdTracking() {
     try {
       const response = await axios.post('http://localhost:5000/api/analyze-bird-image', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    
+      });
+
       setBirdName(response.data.birdName);
     } catch (error) {
       console.error('Error sending photo to backend:', error);
@@ -199,12 +227,12 @@ function BirdTracking() {
 
   return (
     <Box sx={{ height: '100vh', position: 'relative' }}>
-      <Box 
-        ref={mapContainer} 
-        sx={{ 
+      <Box
+        ref={mapContainer}
+        sx={{
           height: '100%',
           width: '100%',
-        }} 
+        }}
       />
       {/* ... (longitude, latitude, zoom display remains the same) */}
       <Box sx={{
@@ -224,10 +252,10 @@ function BirdTracking() {
           width: '200px',
           height: '150px',
         }}>
-          <video 
-            ref={videoRef} 
-            style={{ width: '100%', height: '100%', display: stream ? 'block' : 'none' }} 
-            autoPlay 
+          <video
+            ref={videoRef}
+            style={{ width: '100%', height: '100%', display: stream ? 'block' : 'none' }}
+            autoPlay
             playsInline  // Important for iOS
           />
           {!stream && (
@@ -257,7 +285,7 @@ function BirdTracking() {
           >
             {isRecording ? <StopIcon /> : <MicIcon />}
           </IconButton>
-          <IconButton 
+          <IconButton
             onClick={stream ? stopCamera : startCamera}
             sx={{
               backgroundColor: stream ? 'blue' : 'white',
@@ -272,7 +300,7 @@ function BirdTracking() {
             <CameraAltIcon />
           </IconButton>
           {stream && (
-            <IconButton 
+            <IconButton
               onClick={takePhoto}
               disabled={isLoading}
               sx={{
