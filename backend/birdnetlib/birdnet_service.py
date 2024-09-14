@@ -4,6 +4,7 @@ from datetime import datetime
 import base64
 import io
 import os
+import tempfile
 
 class Bird_Analyzer:
     def __init__(self):
@@ -12,11 +13,16 @@ class Bird_Analyzer:
 
     def decode_and_get_info(self, Base64AudioString):
         audio_bytes = base64.b64decode(Base64AudioString)
-        received_audio_file = 'received_audio.wav'
-        with open(received_audio_file, 'w') as audio_file:
-            audio_file.write(audio_bytes)
-        
-        return received_audio_file
+        received_audio_file = 'received_audio'
+        # with open(received_audio_file, 'wb') as audio_file:
+        #     audio_file.write(audio_bytes)
+        # return received_audio_file
+        temp_audio_file = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
+        temp_audio_file.write(audio_bytes)
+        temp_audio_file.flush()  # Ensure data is written to the file
+        temp_audio_file.close()
+        print(f"temp file name: {temp_audio_file.name}")
+        return temp_audio_file.name  # Return the temp file path
 
         
     def analyze_from_base64(self, Base64AudioString):

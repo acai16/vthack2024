@@ -27,14 +27,23 @@ def retrieve_blob():
         assert blob is not None
         base64_string = blob
         # blob.split(',', 1)[1]
-        print(f"Blob acquired: {base64_string}")
         b_a = Bird_Analyzer()
         # highest_bird = b_a.analyze_from_base64(base64_string)
+        base64_string = base64_string + '=' * (-len(base64_string) % 4)
+        print(f"Blob acquired: {base64_string}")
         decoded_audio_file = b_a.decode_and_get_info(base64_string)
+        decoded_audio_file = decoded_audio_file.replace('//', '/')
+        decoded_audio_file = r"C:\Users\prana\CS Projects\intro_to_flask\decoded_sample2.mp3"
+        print(f"Decoded audio file {decoded_audio_file}")
         analyzer = Analyzer()
         recording = Recording(analyzer, decoded_audio_file)
-        recording.analyze()
-        print(f"Detections: {recording.detections}")
+        try:
+            # Analyze the audio recording
+            recording.analyze()
+            # Print the results
+            print(f"Detections: {recording.detections}")
+        except Exception as e:
+            print(f"Error during analysis: {e}")
 
         # print("Highest bird:", highest_bird)
         
