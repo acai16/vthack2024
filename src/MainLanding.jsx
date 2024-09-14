@@ -11,6 +11,8 @@ import { useTheme } from "@mui/material/styles";
 
 // Import your video file
 import forestVideo from "./assets/background/Aviate.mov";
+// Import your logo file
+import logoImage from "./assets/images/aviate4.png";
 
 function MainLanding() {
   const theme = useTheme();
@@ -45,7 +47,7 @@ function MainLanding() {
           zIndex: -1,
         }}
       />
-      
+
       {/* Content of MainLanding */}
       <Box
         display="flex"
@@ -57,65 +59,78 @@ function MainLanding() {
           backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional background overlay
         }}
       >
-        <Container>
-          <Grid container item xs={12} md={7} lg={6} flexDirection="column" justifyContent="center">
-            <Typography
-              variant="h1"
-              color="white"
-              mb={3}
-              sx={{
-                fontSize: isMdDown ? "3rem" : "4rem",
-                fontWeight: 700,
-              }}
-            >
-              Aviate.ai
-            </Typography>
-            <Typography 
-              variant="body1" 
-              color="white" 
-              opacity={0.8} 
-              pr={6} 
-              mr={6}
-              sx={{
-                fontSize: "1.25rem",
-                fontWeight: 400,
-              }}
-            >
-              The time is now for it be okay to be great. People in this world shun people for being
-              nice.
-            </Typography>
-            <Stack direction="row" spacing={1} mt={3}>
-              <Button 
-                variant="contained" 
-                color="primary"
-                onClick={handleGetStarted}
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={7}>
+              <Typography
+                variant="h1"
+                color="white"
+                mb={3}
                 sx={{
-                  backgroundColor: 'white',
-                  color: 'primary.main',
-                  fontSize: '1rem',
-                  padding: '0.75rem 1.5rem',
-                  '&:hover': {
+                  fontSize: isMdDown ? "3rem" : "4rem",
+                  fontWeight: 700,
+                }}
+              >
+                Aviate.ai
+              </Typography>
+              <Typography
+                variant="body1"
+                color="white"
+                opacity={0.8}
+                mb={3}
+                sx={{
+                  fontSize: "1.25rem",
+                  fontWeight: 400,
+                }}
+              >
+                The time is now for it be okay to be great. People in this world shun people for being
+                nice.
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleGetStarted}
+                  sx={{
                     backgroundColor: 'white',
-                  },
+                    color: 'primary.main',
+                    fontSize: '1rem',
+                    padding: '0.75rem 1.5rem',
+                    '&:hover': {
+                      backgroundColor: 'white',
+                    },
+                  }}
+                >
+                  Get Started
+                </Button>
+                <Button
+                  variant="text"
+                  onClick={handleReadMore}
+                  sx={{
+                    color: 'white',
+                    fontSize: '1rem',
+                    padding: '0.75rem 1.5rem',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}
+                >
+                  Read more
+                </Button>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} md={5} sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box
+                component="img"
+                src={logoImage}
+                alt="Aviate.ai Logo"
+                sx={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  maxHeight: isMdDown ? '200px' : '500px',
                 }}
-              >
-                Get Started
-              </Button>
-              <Button 
-                variant="text" 
-                onClick={handleReadMore}
-                sx={{ 
-                  color: 'white',
-                  fontSize: '1rem',
-                  padding: '0.75rem 1.5rem',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  },
-                }}
-              >
-                Read more
-              </Button>
-            </Stack>
+              />
+            </Grid>
           </Grid>
         </Container>
       </Box>
