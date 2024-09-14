@@ -95,7 +95,16 @@ function BirdTracking() {
 
       mediaRecorder.current.onstop = () => {
         const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
-        downloadBlob(audioBlob); // this is where is downloads tos
+        // downloadBlob(audioBlob); // this is where is downloads tos
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const base64String = reader.result;
+          sendBlobToFlask(base64String)
+        }
+
+        reader.readAsDataURL(audioBlob);
+        
         audioChunks.current = [];
       };
 
@@ -106,6 +115,10 @@ function BirdTracking() {
     }
   };
 
+  function sendBase64BlobToFlask(base64String) {
+    
+  }
+
   const stopRecording = () => {
     if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
       mediaRecorder.current.stop();
@@ -114,6 +127,9 @@ function BirdTracking() {
   };
 
   const downloadBlob = (blob) => {
+
+    
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     document.body.appendChild(a);
