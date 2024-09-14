@@ -116,6 +116,43 @@ def get_bird_audio(audio_id):
         return jsonify(message=str(e)), 500
 
 
+# localhost:5000
+@app.route("/api/analyze", methods=["GET"])
+def analyze_sounds():
+    global client
+    try:
+        client.admin.command("ping")
+        print("Pinged your deployment. You successfully connected to MongoDB!")
+    except Exception as e:
+        raise ValueError("Connection Unsuccessful")
+
+    client.admin.command("ping")
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+
+    db = client[""]
+    collection = db["your_collection_name"]
+    data = collection.find_one()
+
+    return jsonify(message="Analysis complete", data=data)
+
+
+@app.route("/api/coordinates", methods=["POST"])
+def receive_coordinates():
+    global coordinates
+    data = request.json
+    try:
+        latitude = data.get("latitude")
+        longitude = data.get("longitude")
+
+        assert latitude is not None and longitude is not None
+
+    except:
+        raise ValueError("Error: Latitude or Longitude does not exist")
+
+    coordinates = {"latitude": latitude, "longitude": longitude}
+    return jsonify(message="Coordinates received and stored")
+
+
 def convert_blob_to_file(blob):
     base64_string = blob
     base64_string = base64_string + "=" * (-len(base64_string) % 4)
@@ -156,40 +193,3 @@ def convert_blob_to_file(blob):
         return reencoded_audio_file
     except subprocess.CalledProcessError as e:
         print(f"Error during re-encoding: {e}")
-
-
-# localhost:5000
-@app.route("/api/analyze", methods=["GET"])
-def analyze_sounds():
-    global client
-    try:
-        client.admin.command("ping")
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        raise ValueError("Connection Unsuccessful")
-
-    client.admin.command("ping")
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-
-    db = client[""]
-    collection = db["your_collection_name"]
-    data = collection.find_one()
-
-    return jsonify(message="Analysis complete", data=data)
-
-
-@app.route("/api/coordinates", methods=["POST"])
-def receive_coordinates():
-    global coordinates
-    data = request.json
-    try:
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
-
-        assert latitude is not None and longitude is not None
-
-    except:
-        raise ValueError("Error: Latitude or Longitude does not exist")
-
-    coordinates = {"latitude": latitude, "longitude": longitude}
-    return jsonify(message="Coordinates received and stored")
