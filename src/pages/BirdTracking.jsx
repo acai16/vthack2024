@@ -6,6 +6,9 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MicIcon from '@mui/icons-material/Mic';
 import StopIcon from '@mui/icons-material/Stop';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import CircularProgress from '@mui/material/CircularProgress';
+import axios from 'axios';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicGRvbzIwMDQiLCJhIjoiY20xMWluN3puMHN5cTJqcTFyeGY2bG5tOSJ9.8E3KBwUMaJCyWD3uNh8M3w';
 
@@ -18,6 +21,11 @@ function BirdTracking() {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorder = useRef(null);
   const audioChunks = useRef([]);
+  const videoRef = useRef(null);
+  const [stream, setStream] = useState(null);
+  const [birdName, setBirdName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -41,13 +49,13 @@ function BirdTracking() {
       
       map.current.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
 
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    // Adjust the position of the navigation control
-    const navControl = document.querySelector('.mapboxgl-ctrl-top-right');
-        if (navControl) {
+      // Adjust the position of the navigation control
+      const navControl = document.querySelector('.mapboxgl-ctrl-top-right');
+      if (navControl) {
         navControl.style.top = '60px';  // Adjust this value as needed
-    }
+      }
 
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(position => {
@@ -95,7 +103,7 @@ function BirdTracking() {
 
       mediaRecorder.current.onstop = () => {
         const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
-        downloadBlob(audioBlob); // this is where is downloads tos
+        downloadBlob(audioBlob);
         audioChunks.current = [];
       };
 
@@ -124,6 +132,71 @@ function BirdTracking() {
     window.URL.revokeObjectURL(url);
   };
 
+  const startCamera = async () => {
+    try {
+      const videoStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      setStream(videoStream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = videoStream;
+      }
+    } catch (err) {
+      console.error("Error accessing the camera", err);
+      setError("Failed to access camera. Please ensure you've granted camera permissions.");
+    }
+  };
+
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
+
+  const takePhoto = () => {
+    if (videoRef.current) {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
+      canvas.toBlob((blob) => {
+        if (blob) {
+          console.log('Blob created:', blob);
+          sendPhotoToBackend(blob);
+        } else {
+          console.error('Failed to create blob');
+          setError('Failed to capture image. Please try again.');
+        }
+      }, 'image/jpeg');
+    }
+  };
+
+  const sendPhotoToBackend = async (blob) => {
+    setIsLoading(true);
+    setError(null);
+    setBirdName(null);
+
+    const formData = new FormData();
+    formData.append('image', blob, 'bird_photo.jpg');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/analyze-bird-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    
+      setBirdName(response.data.birdName);
+    } catch (error) {
+      console.error('Error sending photo to backend:', error);
+      setError('Error analyzing image. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Box sx={{ height: '100vh', position: 'relative' }}>
       <Box 
@@ -133,46 +206,105 @@ function BirdTracking() {
           width: '100%',
         }} 
       />
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 10,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          backgroundColor: 'rgba(35, 55, 75, 0.9)',
-          color: '#fff',
-          padding: '6px 12px',
-          fontFamily: 'monospace',
-          zIndex: 1,
-          borderRadius: 4,
-          textAlign: 'center',
-        }}
-      >
-        <Typography variant="body2">
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        </Typography>
+      {/* ... (longitude, latitude, zoom display remains the same) */}
+      <Box sx={{
+        position: 'absolute',
+        bottom: 10,
+        left: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        zIndex: 2,
+      }}>
+        <Box sx={{
+          mb: 2,
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          borderRadius: 2,
+          overflow: 'hidden',
+          width: '200px',
+          height: '150px',
+        }}>
+          <video 
+            ref={videoRef} 
+            style={{ width: '100%', height: '100%', display: stream ? 'block' : 'none' }} 
+            autoPlay 
+            playsInline  // Important for iOS
+          />
+          {!stream && (
+            <Box sx={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Typography variant="body2">Camera Off</Typography>
+            </Box>
+          )}
+        </Box>
+        <Box sx={{
+          display: 'flex',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          borderRadius: 2,
+          padding: 1,
+        }}>
+          <IconButton
+            onClick={isRecording ? stopRecording : startRecording}
+            sx={{
+              backgroundColor: isRecording ? 'red' : 'white',
+              color: isRecording ? 'white' : 'red',
+              '&:hover': {
+                backgroundColor: isRecording ? 'darkred' : 'lightgrey',
+              },
+              width: 48,
+              height: 48,
+              mr: 1,
+            }}
+          >
+            {isRecording ? <StopIcon /> : <MicIcon />}
+          </IconButton>
+          <IconButton 
+            onClick={stream ? stopCamera : startCamera}
+            sx={{
+              backgroundColor: stream ? 'blue' : 'white',
+              color: stream ? 'white' : 'blue',
+              '&:hover': {
+                backgroundColor: stream ? 'darkblue' : 'lightgrey',
+              },
+              width: 48,
+              height: 48,
+            }}
+          >
+            <CameraAltIcon />
+          </IconButton>
+          {stream && (
+            <IconButton 
+              onClick={takePhoto}
+              disabled={isLoading}
+              sx={{
+                backgroundColor: 'green',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'darkgreen',
+                },
+                width: 48,
+                height: 48,
+                ml: 1,
+              }}
+            >
+              {isLoading ? <CircularProgress size={24} color="inherit" /> : <CameraAltIcon />}
+            </IconButton>
+          )}
+        </Box>
+        {(birdName || error) && (
+          <Box sx={{
+            mt: 2,
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            padding: 2,
+            borderRadius: 2,
+          }}>
+            <Typography variant="body2" color={error ? 'error' : 'textPrimary'}>
+              {error || `Detected: ${birdName}`}
+            </Typography>
+          </Box>
+        )}
       </Box>
-      <IconButton
-        onClick={isRecording ? stopRecording : startRecording}
-        sx={{
-          position: 'absolute',
-          bottom: 40,  // Moved higher
-          left: 30,    // Moved more to the right
-          backgroundColor: isRecording ? 'red' : 'white',
-          color: isRecording ? 'white' : 'red',
-          '&:hover': {
-            backgroundColor: isRecording ? 'darkred' : 'lightgrey',
-          },
-          width: 64,   // Increased width
-          height: 64,  // Increased height
-          '& .MuiSvgIcon-root': {
-            fontSize: 32,  // Increased icon size
-          },
-        }}
-      >
-        {isRecording ? <StopIcon /> : <MicIcon />}
-      </IconButton>
     </Box>
   );
 }
+
 export default BirdTracking;
