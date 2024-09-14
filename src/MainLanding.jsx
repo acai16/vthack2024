@@ -91,8 +91,8 @@ function MainLanding() {
                   color="primary"
                   onClick={handleGetStarted}
                   sx={{
-                    backgroundColor: 'white',
-                    color: 'primary.main',
+                    backgroundColor: '#898eae',
+                    color: 'black',
                     fontSize: '1rem',
                     padding: '0.75rem 1.5rem',
                     '&:hover': {

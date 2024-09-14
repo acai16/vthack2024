@@ -17,21 +17,24 @@ import { useTheme } from "@mui/material/styles"
 // Import your video file
 import forestVideo from "../assets/background/Aviate.mov";  // Adjust the path as necessary
 import News1Image from "../assets/images/News1.png"
+import News2Image from "../assets/images/News2Image.jpg"
+import News3Image from "../assets/images/News3Image.jpg"
+
 function About() {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
   const accordionData = [
     {
       title: "Our Mission",
-      content: "At Aviate, our mission is to revolutionize the way people interact with technology. We strive to create intuitive, powerful tools that enhance productivity and creativity in both personal and professional spheres."
+      content: "At Aviate Ai, we are committed to enhancing the understanding and conservation of bird populations by leveraging cutting-edge technology to detect and analyze bird sounds and images."
     },
     {
       title: "Our Team",
-      content: "Behind Aviate is a diverse team of passionate individuals, each bringing unique skills and perspectives to the table. From seasoned software engineers to creative designers and visionary product managers, our team is united by a common goal: to deliver exceptional user experiences."
+      content: "Our diverse and passionate team consists of environmental scientists, software engineers, and bird enthusiasts dedicated to creating innovative solutions for environmental protection."
     },
     {
       title: "Our Values",
-      content: "Integrity, innovation, and user-centricity form the core of our values at Aviate. We believe in transparent communication, both within our team and with our users. We're committed to ethical practices in all aspects of our business."
+      content: "We value collaboration, innovation, and sustainability, and strive to empower local communities and agencies with real-time data to help preserve biodiversity and promote ecological balance."
     }
   ];
 
@@ -39,21 +42,23 @@ function About() {
     {
       title: "Birds & Biodiversity",
       date: "June 15, 2024",
-      summary: "Aviate introduces a groundbreaking AI-powered feature that promises to transform user productivity.",
+      summary: "At Aviate Ai, we are committed to enhancing the understanding and conservation of bird populations by leveraging cutting-edge technology to detect and analyze bird sounds..",
       imageUrl: News1Image,
       link: "https://global.canon/en/environment/bird-branch/bird-column/biodiversity2/index.html"
     },
     {
-      title: "Aviate Secures Series B Funding",
+      title: "Birds Are a Key Investment for Protecting Biodiversity",
       date: "May 22, 2024",
-      summary: "In a recent funding round, Aviate has secured $50 million in Series B funding to accelerate growth and innovation.",
-      imageUrl: "/api/placeholder/400/200"
+      summary: "The State of the Birds 2022 report emphasizes that birds are vital for biodiversity conservation, serving as responsive indicators whose protection benefits numerous other species. Efforts to restore bird habitats, such as for the Kirtland's Warbler and Red-cockaded Woodpecker, have also aided other endangered species and demonstrate the interconnectedness of ecosystems.",
+      imageUrl: News2Image,
+      link: "https://www.stateofthebirds.org/2022/birds-investment-biodiversity/"
     },
     {
-      title: "Aviate Partners with Tech Giants",
+      title: "How Does Climate Change Impact Birds?",
       date: "April 10, 2024",
-      summary: "Aviate announces strategic partnerships with leading tech companies to enhance its ecosystem and reach.",
-      imageUrl: "/api/placeholder/400/200"
+      summary: "The American Bird Conservancy highlights how climate change impacts birds both directly, by altering their habitats, migration patterns, and physical traits, and indirectly, through effects such as drought, wildfires, sea-level rise, and disease spread. It encourages people to help birds by reducing non-climate threats, cutting carbon emissions, and restoring bird habitats.",
+      imageUrl: News3Image,
+      link: "https://abcbirds.org/blog/climate-change-impact/"
     }
   ];
 
@@ -106,7 +111,7 @@ function About() {
             About Us
           </Typography>
           <Typography variant="body1" color="white" mb={4}>
-            Learn more about Aviate and our commitment to innovation.
+            Learn more about Aviate and our commitment to innovation and conservation.
           </Typography>
           
           {/* Accordions */}
