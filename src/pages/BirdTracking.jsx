@@ -100,7 +100,7 @@ function BirdTracking() {
         const reader = new FileReader();
 
         reader.onload = () => {
-          const base64String = reader.result;
+          const base64String = reader.result.split(',')[1];
           sendBase64BlobToFlask(base64String)
         }
 

@@ -2,7 +2,9 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from birdnetlib import Recording
 from birdnet_service import Bird_Analyzer
+from birdnetlib.analyzer import Analyzer
 
 app = Flask(__name__)
 CORS(app)
@@ -23,11 +25,18 @@ def retrieve_blob():
     try:
         blob = data.get('blob')
         assert blob is not None
-        base64_string = blob.split(',', 1)[1]
+        base64_string = blob
+        # blob.split(',', 1)[1]
         print(f"Blob acquired: {base64_string}")
         b_a = Bird_Analyzer()
-        highest_bird = b_a.analyze_from_base64(base64_string)
-        print("Highest bird:", highest_bird)
+        # highest_bird = b_a.analyze_from_base64(base64_string)
+        decoded_audio_file = b_a.decode_and_get_info(base64_string)
+        analyzer = Analyzer()
+        recording = Recording(analyzer, decoded_audio_file)
+        recording.analyze()
+        print(f"Detections: {recording.detections}")
+
+        # print("Highest bird:", highest_bird)
         
         return jsonify(message="Blob successfully received and stored")
     except:

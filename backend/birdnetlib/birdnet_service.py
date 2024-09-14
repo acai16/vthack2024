@@ -10,11 +10,18 @@ class Bird_Analyzer:
         # Load and initialize the BirdNET-Analyzer models.
         self.analyzer = Analyzer()
 
+    def decode_and_get_info(self, Base64AudioString):
+        audio_bytes = base64.b64decode(Base64AudioString)
+        received_audio_file = 'received_audio.wav'
+        with open(received_audio_file, 'w') as audio_file:
+            audio_file.write(audio_bytes)
+        
+        return received_audio_file
+
+        
     def analyze_from_base64(self, Base64AudioString):
         recording = self.create_recording_from_file(Base64AudioString)
-
         self.analyze_recording(recording)
-        
         return recording.detections
     
     def decode_base64_to_wav(self, Base64AudioString):
