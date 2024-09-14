@@ -5,6 +5,7 @@ from flask_cors import CORS
 from birdnetlib import Recording
 from birdnet_service import Bird_Analyzer
 from birdnetlib.analyzer import Analyzer
+import subprocess
 
 app = Flask(__name__)
 CORS(app)
@@ -18,7 +19,7 @@ client = MongoClient(uri, server_api=ServerApi('1'))
 def index():
     return jsonify(message = "Welcome to the Aviate API")
 
-@app.route('/api/getblob', methods = ["POST"])
+@app.route('/api/getblob', methods=["POST"])
 def retrieve_blob():
     global blob
     data = request.json 
@@ -26,29 +27,39 @@ def retrieve_blob():
         blob = data.get('blob')
         assert blob is not None
         base64_string = blob
-        # blob.split(',', 1)[1]
-        b_a = Bird_Analyzer()
-        # highest_bird = b_a.analyze_from_base64(base64_string)
         base64_string = base64_string + '=' * (-len(base64_string) % 4)
         print(f"Blob acquired: {base64_string}")
+
+        # Decode base64 string and get the audio file path
+        b_a = Bird_Analyzer()
         decoded_audio_file = b_a.decode_and_get_info(base64_string)
         decoded_audio_file = decoded_audio_file.replace('//', '/')
-        # decoded_audio_file = r"C:\Users\prana\CS Projects\intro_to_flask\decoded_sample2.mp3"
         print(f"Decoded audio file {decoded_audio_file}")
-        analyzer = Analyzer()
-        recording = Recording(analyzer, decoded_audio_file)
+
+        # Re-encode the audio file to ensure valid structure
+        reencoded_audio_file = decoded_audio_file.replace('.mp3', '_reencoded.mp3')
+        ffmpeg_path = r"C:\ffmpeg\ffmpeg-7.0.2-essentials_build\bin\ffmpeg.exe"
         try:
-            # Analyze the audio recording
+            subprocess.run([
+                ffmpeg_path, '-i', decoded_audio_file,
+                '-acodec', 'libmp3lame', '-ab', '192k', reencoded_audio_file
+            ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(f"Re-encoded audio file {reencoded_audio_file}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error during re-encoding: {e}")
+
+        # Analyze the re-encoded audio recording
+        analyzer = Analyzer()
+        recording = Recording(analyzer, reencoded_audio_file)
+        try:
             recording.analyze()
-            # Print the results
             print(f"Detections: {recording.detections}")
         except Exception as e:
             print(f"Error during analysis: {e}")
 
-        # print("Highest bird:", highest_bird)
-        
         return jsonify(message="Blob successfully received and stored")
-    except:
+    except Exception as e:
+        print(f"Error: {e}")
         raise ValueError("Error: Something wrong with blob unlucky gg go next")
 
 #localhost:5000
