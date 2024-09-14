@@ -1,7 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -12,9 +12,14 @@ import { useTheme } from "@mui/material/styles";
 // Import your video file
 import forestVideo from "./assets/background/Aviate.mov";
 
-function HeaderOne() {
+function MainLanding() {
   const theme = useTheme();
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
+
+  const handleReadMore = () => {
+    navigate('/about');
+  };
 
   return (
     <Box component="header" position="relative" overflow="hidden">
@@ -36,82 +41,8 @@ function HeaderOne() {
           zIndex: -1,
         }}
       />
-
-      {/* Navbar and content */}
-      <Box component="nav" position="absolute" top="0.5rem" width="100%" zIndex={1}>
-        <Container>
-          <Grid container flexDirection="row" alignItems="center">
-            <Typography
-              component={Link}
-              href="#"
-              variant="h6"
-              color="white"
-              fontWeight="bold"
-              py={1}
-              mr={2}
-              sx={{ textTransform: 'none', fontSize: '1.25rem' }}
-            >
-              Material Design
-            </Typography>
-            <Button
-              variant="outlined"
-              color="inherit"
-              sx={{ display: { xs: "block", lg: "none" }, ml: "auto", fontSize: '1.25rem', p: 1.5 }}
-            >
-              <Box component="i" color="white" className="fas fa-bars" />
-            </Button>
-            <Box
-              component="ul"
-              display={{ xs: "none", lg: "flex" }}
-              p={0}
-              my={0}
-              mx="auto"
-              sx={{ listStyle: "none" }}
-            >
-              {["Home", "About Us", "Contact Us"].map((item) => (
-                <Box component="li" key={item}>
-                  <Typography
-                    component={Link}
-                    href="#"
-                    variant="h6"
-                    color="white"
-                    fontWeight="bold"
-                    p={2}
-                    onClick={(e) => e.preventDefault()}
-                    sx={{ textTransform: 'none', fontSize: '1.25rem' }}
-                  >
-                    {item}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-            <Box
-              component="ul"
-              display={{ xs: "none", lg: "flex" }}
-              p={0}
-              m={0}
-              sx={{ listStyle: "none" }}
-            >
-              {["fab fa-twitter", "fab fa-facebook", "fab fa-instagram"].map((icon) => (
-                <Box component="li" key={icon}>
-                  <Typography
-                    component={Link}
-                    href="#"
-                    variant="h6"
-                    p={2}
-                    onClick={(e) => e.preventDefault()}
-                    sx={{ fontSize: '1.5rem' }}
-                  >
-                    <Box component="i" color="white" className={icon} />
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Grid>
-        </Container>
-      </Box>
       
-      {/* Content of HeaderOne */}
+      {/* Content of MainLanding */}
       <Box
         display="flex"
         alignItems="center"
@@ -167,6 +98,7 @@ function HeaderOne() {
               </Button>
               <Button 
                 variant="text" 
+                onClick={handleReadMore}
                 sx={{ 
                   color: 'white',
                   fontSize: '1rem',
@@ -186,4 +118,4 @@ function HeaderOne() {
   );
 }
 
-export default HeaderOne;
+export default MainLanding;
