@@ -206,10 +206,10 @@ function BirdForum() {
                       fontWeight: 700,
                     }}
                   >
-                    Bird Forum
+                    Bird Book
                   </Typography>
                   <Typography variant="h5" color="white" mb={4}>
-                    Please log in to access the Bird Forum
+                    Please log in to access the Bird Book
                   </Typography>
                   <Button 
                     variant="contained" 
