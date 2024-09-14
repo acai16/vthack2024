@@ -6,6 +6,8 @@ from birdnetlib import Recording
 from birdnet_service import Bird_Analyzer
 from birdnetlib.analyzer import Analyzer
 import subprocess
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
@@ -38,7 +40,12 @@ def retrieve_blob():
 
         # Re-encode the audio file to ensure valid structure
         reencoded_audio_file = decoded_audio_file.replace('.mp3', '_reencoded.mp3')
-        ffmpeg_path = r"C:\ffmpeg\ffmpeg-7.0.2-essentials_build\bin\ffmpeg.exe"
+
+        load_dotenv()
+        from_env_path= os.environ.get('FFMPEG_PATH')
+
+        # ffmpeg_path = r"C:\ffmpeg\ffmpeg-7.0.2-essentials_build\bin\ffmpeg.exe"
+        ffmpeg_path = f"{from_env_path}"
         try:
             subprocess.run([
                 ffmpeg_path, '-i', decoded_audio_file,
