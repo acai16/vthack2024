@@ -164,14 +164,14 @@ class MongodbService:
 """
 TESTING
 """
-mongo = MongodbService("mflix")
-# file_id = mongo.upload_file("RECORDINGS/test1.mp3", {}, {})
-# print(file_id)
-# print(type(file_id))
-downloaded_file = mongo.download_file(
-    "66e601500122b2880f236491"
-)  # "66e601500122b2880f236491"
-print(downloaded_file)
+# mongo = MongodbService("mflix")
+# # file_id = mongo.upload_file("RECORDINGS/test1.mp3", {}, {})
+# # print(file_id)
+# # print(type(file_id))
+# downloaded_file = mongo.download_file(
+#     "66e601500122b2880f236491"
+# )  # "66e601500122b2880f236491"
+# print(downloaded_file)
 
 # mongo.start_hike("some_user_id")
 # mongo.seen_bird("some_user_id", "66e601510122b2880f236493")

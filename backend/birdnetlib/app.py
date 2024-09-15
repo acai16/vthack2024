@@ -117,23 +117,23 @@ def get_bird_audio(audio_id):
 
 
 # localhost:5000
-@app.route("/api/analyze", methods=["GET"])
-def analyze_sounds():
-    global client
-    try:
-        client.admin.command("ping")
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        raise ValueError("Connection Unsuccessful")
+# @app.route("/api/analyze", methods=["GET"])
+# def analyze_sounds():
+#     global client
+#     try:
+#         client.admin.command("ping")
+#         print("Pinged your deployment. You successfully connected to MongoDB!")
+#     except Exception as e:
+#         raise ValueError("Connection Unsuccessful")
 
-    client.admin.command("ping")
-    print("Pinged your deployment. You successfully connected to MongoDB!")
+#     client.admin.command("ping")
+#     print("Pinged your deployment. You successfully connected to MongoDB!")
 
-    db = client[""]
-    collection = db["your_collection_name"]
-    data = collection.find_one()
+#     db = client[""]
+#     collection = db["your_collection_name"]
+#     data = collection.find_one()
 
-    return jsonify(message="Analysis complete", data=data)
+#     return jsonify(message="Analysis complete", data=data)
 
 
 @app.route("/api/coordinates", methods=["POST"])
@@ -151,6 +151,15 @@ def receive_coordinates():
 
     coordinates = {"latitude": latitude, "longitude": longitude}
     return jsonify(message="Coordinates received and stored")
+
+
+@app.route("/api/delete_hike/<string:hike_id>", methods=["DELETE"])
+def delete_hikes(hike_id):
+    try:
+        mongo_service.delete_hikes(hike_id)
+        return jsonify(message="Hike deleted successfully")
+    except Exception as e:
+        return jsonify(message=str(e)), 500
 
 
 def convert_blob_to_file(blob):
