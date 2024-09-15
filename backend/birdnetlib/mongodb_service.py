@@ -153,6 +153,13 @@ class MongodbService:
 
         return result
 
+    def delete_hikes(self, hike_id):
+        hikes = self.db["hikes"]
+        hike = hikes.find_one({"_id": ObjectId(hike_id)})
+        for bird_id in hike["birds_seen"]:
+            self.db["bird_info"].delete_one({"_id": ObjectId(bird_id)})
+        hikes.delete_one({"_id": ObjectId(hike_id)})
+
 
 """
 TESTING
