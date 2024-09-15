@@ -152,7 +152,7 @@ class MongodbService:
 
             # Get bird info for each bird ID in the birds_seen array
             for bird_id in hike["birds_seen"]:
-                hike_info["birds_seen"].append(bird_id)
+                hike_info["birds_seen"].append(str(bird_id))
 
             result.append(hike_info)
 
