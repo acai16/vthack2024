@@ -6,7 +6,7 @@ from bson.objectid import ObjectId
 
 class MongodbService:
     def __init__(self, db_name):
-        self.mongo_db_uri = "mongodb+srv://admin:admin@cluster0.xswxz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+        self.mongo_db_uri = "mongodb+srv://<user>:<pass>@cluster0.xswxz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
         self.client = MongoClient(self.mongo_db_uri)
         self.db = self.client.get_database(db_name)
         self.bucket = gridfs.GridFSBucket(self.db)
