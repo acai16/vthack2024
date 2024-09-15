@@ -83,8 +83,13 @@ def start_hike(user_id):
 @app.route("/api/seen_bird/<string:user_id>/<string:bird_id>", methods=["GET"])
 def seen_bird(user_id, bird_id):
     try:
-        mongo_service.seen_bird(user_id, bird_id)
-        return jsonify(message="Bird seen successfully")
+        result = mongo_service.seen_bird(user_id, bird_id)
+        if not result:
+            return jsonify(message="Bird not seen successfully")
+        print(f"Bird Id: {bird_id}")
+        bird = mongo_service.get_bird(bird_id)
+        print(bird)
+        return jsonify(message=f"Bird seen successfully {bird}")
     except Exception as e:
         return jsonify(message=str(e)), 500
 
@@ -98,13 +103,14 @@ def end_hike(user_id, hike_length):
         return jsonify(message=str(e)), 500
 
 
-@app.route("/api/get_hikes/<string:user_id>", methods=["GET"])
+@app.route("/api/get_hikes_from_id/<string:user_id>", methods=["GET"])
 def get_hikes(user_id):
     try:
         hikes = mongo_service.fetch_user_hikes(user_id)
         return jsonify(message="Hikes retrieved successfully", hikes=hikes)
     except Exception as e:
-        return jsonify(message=str(e)), 500
+        print(f"Error in get_hikes: {str(e)}")  # Log the error
+        return jsonify(message=f"An error occurred: {str(e)}"), 500
 
 
 @app.route("/api/get_bird_audio/<string:audio_id>", methods=["GET"])
@@ -120,6 +126,15 @@ def get_bird_audio(audio_id):
 def get_bird_info(bird_id):
     try:
         bird_info = mongo_service.get_bird(bird_id)
+        return jsonify(message="Bird info retrieved successfully", bird_info=bird_info)
+    except Exception as e:
+        return jsonify(message=str(e)), 500
+
+
+@app.route("/api/get_bird_info_from_file/<string:file_id>", methods=["GET"])
+def find_bird_info_by_file_id(file_id):
+    try:
+        bird_info = mongo_service.find_bird_from_file_id(file_id)
         return jsonify(message="Bird info retrieved successfully", bird_info=bird_info)
     except Exception as e:
         return jsonify(message=str(e)), 500

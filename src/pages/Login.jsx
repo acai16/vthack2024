@@ -23,7 +23,7 @@ function Login() {
 
   const fetchHikes = async () => {
     try {
-      const response = await axios.get(`http://localhost:5001/api/get_hikes/${user.userId}`);
+      const response = await axios.get(`http://localhost:5001/api/get_hikes_from_id/${user.userId}`);
       const hikesData = response.data.hikes;
       setHikes(hikesData);
       fetchBirdDetails(hikesData); // Fetch details for each bird
