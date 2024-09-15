@@ -36,7 +36,7 @@ class MongodbService:
         return str(file_id)  # Convert file_id to string if needed
 
     def download_file(self, document_id):
-        downloaded_file = self.bucket.open_download_stream(document_id)
+        downloaded_file = self.bucket.open_download_stream(ObjectId(document_id))
         file_name = "../../src/assets/audio/bird_sound.mp3"
         with open(file_name, "wb") as file:
             file.write(downloaded_file.read())

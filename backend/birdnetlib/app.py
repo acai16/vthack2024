@@ -111,46 +111,26 @@ def get_hikes(user_id):
 def get_bird_audio(audio_id):
     try:
         mongo_service.download_file(audio_id)
-        return jsonify(message="Hikes retrieved successfully")
+        return jsonify(message="Bird Sound retrieved successfully")
     except Exception as e:
         return jsonify(message=str(e)), 500
 
 
-# localhost:5000
-@app.route("/api/analyze", methods=["GET"])
-def analyze_sounds():
-    global client
-    try:
-        client.admin.command("ping")
-        print("Pinged your deployment. You successfully connected to MongoDB!")
-    except Exception as e:
-        raise ValueError("Connection Unsuccessful")
+# @app.route("/api/coordinates", methods=["POST"])
+# def receive_coordinates():
+#     global coordinates
+#     data = request.json
+#     try:
+#         latitude = data.get("latitude")
+#         longitude = data.get("longitude")
 
-    client.admin.command("ping")
-    print("Pinged your deployment. You successfully connected to MongoDB!")
+#         assert latitude is not None and longitude is not None
 
-    db = client[""]
-    collection = db["your_collection_name"]
-    data = collection.find_one()
+#     except:
+#         raise ValueError("Error: Latitude or Longitude does not exist")
 
-    return jsonify(message="Analysis complete", data=data)
-
-
-@app.route("/api/coordinates", methods=["POST"])
-def receive_coordinates():
-    global coordinates
-    data = request.json
-    try:
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
-
-        assert latitude is not None and longitude is not None
-
-    except:
-        raise ValueError("Error: Latitude or Longitude does not exist")
-
-    coordinates = {"latitude": latitude, "longitude": longitude}
-    return jsonify(message="Coordinates received and stored")
+#     coordinates = {"latitude": latitude, "longitude": longitude}
+#     return jsonify(message="Coordinates received and stored")
 
 
 def convert_blob_to_file(blob):
