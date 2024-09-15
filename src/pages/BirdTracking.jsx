@@ -12,7 +12,7 @@ import axios from 'axios';
 import { useAuthInfo } from '@propelauth/react';
 
 
-mapboxgl.accessToken = 'pk.eyJ1IjoicGRvbzIwMDQiLCJhIjoiY20xMWluN3puMHN5cTJqcTFyeGY2bG5tOSJ9.8E3KBwUMaJCyWD3uNh8M3w';
+mapboxgl.accessToken = '';
 
 
 function BirdTracking() {
