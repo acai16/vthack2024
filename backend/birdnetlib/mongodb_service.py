@@ -69,6 +69,7 @@ class MongodbService:
         )
 
         if most_recent_hike:
+            print(f"Most recent hike: {most_recent_hike}")
             # Append bird_id to the birds_seen array
             hikes.update_one(
                 {"_id": most_recent_hike["_id"]},
@@ -101,15 +102,33 @@ class MongodbService:
         else:
             print("No recent hike found with length 0.")
 
+    def get_bird(self, bird_id):
+        bird_info_collection = self.db["bird_info"]
+        bird = bird_info_collection.find_one({"_id": ObjectId(bird_id)})
+        if bird:
+            bird_info = {
+                "common_name": bird.get("common_name", "Unknown"),
+                "scientific_name": bird.get("scientific_name", "Unknown"),
+                "start_time": bird.get("start_time", "N/A"),
+                "end_time": bird.get("end_time", "N/A"),
+                "confidence": bird.get("confidence", "N/A"),
+                "label": bird.get("label", "N/A"),
+                "file_id": str(bird["file_id"]) if "file_id" in bird else "N/A",
+            }
+            return bird_info
+        return None
+
     def fetch_user_hikes(self, user_id, test=False):
         hikes_collection = self.db["hikes"]
-        bird_info_collection = self.db["bird_info"]
 
         # Find all hikes for the user
         user_hikes = hikes_collection.find({"user_id": user_id})
 
         result = []
         for hike in user_hikes:
+            print("HIKE ======================")
+            print(f"Hike: {hike}")
+            print("HIKE ======================")
             hike_info = {
                 "hike_id": str(hike["_id"]),
                 "time_started": hike["time_started"].strftime("%Y-%m-%d %H:%M:%S"),
@@ -119,18 +138,7 @@ class MongodbService:
 
             # Get bird info for each bird ID in the birds_seen array
             for bird_id in hike["birds_seen"]:
-                bird = bird_info_collection.find_one({"_id": ObjectId(bird_id)})
-                if bird:
-                    bird_info = {
-                        "common_name": bird.get("common_name", "Unknown"),
-                        "scientific_name": bird.get("scientific_name", "Unknown"),
-                        "start_time": bird.get("start_time", "N/A"),
-                        "end_time": bird.get("end_time", "N/A"),
-                        "confidence": bird.get("confidence", "N/A"),
-                        "label": bird.get("label", "N/A"),
-                        "file_id": str(bird["file_id"]) if "file_id" in bird else "N/A",
-                    }
-                    hike_info["birds_seen"].append(bird_info)
+                hike_info["birds_seen"].append(bird_id)
 
             result.append(hike_info)
 

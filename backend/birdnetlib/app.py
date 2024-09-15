@@ -116,6 +116,15 @@ def get_bird_audio(audio_id):
         return jsonify(message=str(e)), 500
 
 
+@app.route("/api/get_bird_info/<string:bird_id>", methods=["GET"])
+def get_bird_info(bird_id):
+    try:
+        bird_info = mongo_service.get_bird(bird_id)
+        return jsonify(message="Bird info retrieved successfully", bird_info=bird_info)
+    except Exception as e:
+        return jsonify(message=str(e)), 500
+
+
 # localhost:5000
 # @app.route("/api/analyze", methods=["GET"])
 # def analyze_sounds():
@@ -134,23 +143,6 @@ def get_bird_audio(audio_id):
 #     data = collection.find_one()
 
 #     return jsonify(message="Analysis complete", data=data)
-
-
-@app.route("/api/coordinates", methods=["POST"])
-def receive_coordinates():
-    global coordinates
-    data = request.json
-    try:
-        latitude = data.get("latitude")
-        longitude = data.get("longitude")
-
-        assert latitude is not None and longitude is not None
-
-    except:
-        raise ValueError("Error: Latitude or Longitude does not exist")
-
-    coordinates = {"latitude": latitude, "longitude": longitude}
-    return jsonify(message="Coordinates received and stored")
 
 
 @app.route("/api/delete_hike/<string:hike_id>", methods=["DELETE"])
