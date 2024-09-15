@@ -8,7 +8,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from 'axios';
 
-const UNSPLASH_ACCESS_KEY = 'wEVEDdmkVn6lEqzY4HlsAKw8ljMhJMSx7PYkT_THFyg'; // Replace with your actual Unsplash access key
+const UNSPLASH_ACCESS_KEY = 'w'; // Replace with your actual Unsplash access key
 
 function Login() {
   const theme = useTheme();
