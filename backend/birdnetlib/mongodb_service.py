@@ -24,7 +24,7 @@ class MongodbService:
 
         print("opening dictionaries")
         bird_dict["file_id"] = file_id
-        hike_dict["user_id"] = "temp"
+        bird_dict["time"] = datetime.now()
         print("inserting dictionaries")
         bird_info_obj_id = bird_info_collection.insert_one(bird_dict)
 
@@ -57,28 +57,41 @@ class MongodbService:
 
         return hike_id
 
+    def find_bird_from_file_id(self, file_id):
+        bird_info = self.db["bird_info"]
+        bird = bird_info.find_one({"file_id": ObjectId(file_id)})
+        if bird:
+            return bird["_id"]
+        return None
+
     def seen_bird(self, user_id, bird_id):
         """
         Find the most recent hike with a length of 0 and the given user_id,
         and update its birds_seen array by appending the bird_id.
         """
         hikes = self.db["hikes"]
+        bird_info = self.db["bird_info"]
 
         # Find the most recent hike with length == 0 and the given user_id
         most_recent_hike = hikes.find_one(
             {"user_id": user_id, "length": 0}, sort=[("time_started", DESCENDING)]
         )
-
         if most_recent_hike:
             print(f"Most recent hike: {most_recent_hike}")
             # Append bird_id to the birds_seen array
+            bird_id = self.find_bird_from_file_id(bird_id)
+
             hikes.update_one(
                 {"_id": most_recent_hike["_id"]},
                 {"$push": {"birds_seen": (bird_id)}},
             )
             print(f"Updated hike {most_recent_hike['_id']} with bird {bird_id}")
+
+            print("Bird seen successfully")
+            return True
         else:
             print("No recent hike found with length 0.")
+            return
 
     def end_hike(self, user_id, length_of_hike):
         """
@@ -139,7 +152,7 @@ class MongodbService:
 
             # Get bird info for each bird ID in the birds_seen array
             for bird_id in hike["birds_seen"]:
-                hike_info["birds_seen"].append(bird_id)
+                hike_info["birds_seen"].append(str(bird_id))
 
             result.append(hike_info)
 
