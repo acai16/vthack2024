@@ -29,12 +29,13 @@ class MongodbService:
         bird_info_obj_id = bird_info_collection.insert_one(bird_dict)
 
         print(f"Uploaded file with ID: {file_id}")
-        print(f"Bird Object ID: {bird_info_obj_id}")
+        print(
+            f"Bird Object ID: {str(bird_info_obj_id.inserted_id)}"
+        )  # Convert ObjectId to string
         print("exiting upload method")
-        return file_id
+        return str(file_id)  # Convert file_id to string if needed
 
     def download_file(self, document_id):
-        document_id = ObjectId(document_id)
         downloaded_file = self.bucket.open_download_stream(document_id)
         file_name = "../../src/assets/audio/bird_sound.mp3"
         with open(file_name, "wb") as file:
@@ -72,7 +73,7 @@ class MongodbService:
             # Append bird_id to the birds_seen array
             hikes.update_one(
                 {"_id": most_recent_hike["_id"]},
-                {"$push": {"birds_seen": ObjectId(bird_id)}},
+                {"$push": {"birds_seen": (bird_id)}},
             )
             print(f"Updated hike {most_recent_hike['_id']} with bird {bird_id}")
         else:
@@ -157,14 +158,14 @@ class MongodbService:
 """
 TESTING
 """
-mongo = MongodbService("mflix")
-# file_id = mongo.upload_file("RECORDINGS/test1.mp3", {}, {})
-# print(file_id)
-# print(type(file_id))
-downloaded_file = mongo.download_file(
-    "66e601500122b2880f236491"
-)  # "66e601500122b2880f236491"
-print(downloaded_file)
+# mongo = MongodbService("mflix")
+# # file_id = mongo.upload_file("RECORDINGS/test1.mp3", {}, {})
+# # print(file_id)
+# # print(type(file_id))
+# downloaded_file = mongo.download_file(
+#     "66e601500122b2880f236491"
+# )  # "66e601500122b2880f236491"
+# print(downloaded_file)
 
 # mongo.start_hike("some_user_id")
 # mongo.seen_bird("some_user_id", "66e601510122b2880f236493")

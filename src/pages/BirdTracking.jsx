@@ -94,31 +94,70 @@ function BirdTracking() {
 
   const startRecording = async () => {
     try {
+      console.log("Attempting to start recording...");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder.current = new MediaRecorder(stream);
 
+      let recordingInterval = 10000; // 10 seconds
+      let manualStop = false; // Flag to indicate if the stop was manual
+      let interval = false;
+
+      const stopAndSend = () => {
+        console.log("Stopping recording due to interval...");
+        mediaRecorder.current.stop();
+      };
+
       mediaRecorder.current.ondataavailable = (event) => {
-        audioChunks.current.push(event.data);
+        if (event.data.size > 0) {
+          console.log("Data available: ", event.data.size);
+          audioChunks.current.push(event.data);
+        }
       };
 
       mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/mp3' });
-        // downloadBlob(audioBlob); // this is where is downloads tos
-
-        const reader = new FileReader();
-
-        reader.onload = () => {
-          const base64String = reader.result.split(',')[1];
-          sendBase64BlobToFlask(base64String)
+        console.log("Recording stopped.");
+        // Process and send the audio data
+        if (audioChunks.current.length > 0) {
+          const audioBlob = new Blob(audioChunks.current, { type: 'audio/mp3' });
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64String = reader.result.split(',')[1];
+            console.log("Sending audio data to Flask:", base64String); // Debug log
+            sendBase64BlobToFlask(base64String);
+          };
+          reader.readAsDataURL(audioBlob);
+          audioChunks.current = []; // Clear chunks
         }
 
-        reader.readAsDataURL(audioBlob);
-
-        audioChunks.current = [];
+        if (interval) {
+          // Restart recording if it was not a manual stop
+          console.log("Restarting recording...");
+          interval = false
+          mediaRecorder.current.start();
+        } else {
+          console.log("Manual stop detected. Not restarting.");
+        }
       };
 
+      // Start recording initially
+      console.log("Starting recording...");
       mediaRecorder.current.start();
+
+      // Set an interval to stop recording every 10 seconds
+      const intervalId = setInterval(() => {
+        if (mediaRecorder.current.state === "recording") {
+          console.log("Interval triggered. Stopping recording...");
+          interval = true;
+          stopAndSend();
+
+        }
+      }, recordingInterval);
+
+      // Optionally attach the stopRecording function to a stop button
+      // document.getElementById('stopButton').addEventListener('click', stopRecording);
+
       setIsRecording(true);
+
     } catch (err) {
       console.error("Error accessing the microphone", err);
     }
