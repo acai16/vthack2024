@@ -13,8 +13,8 @@ import forestVideo from "../assets/background/Aviate.mov";
 // Configure AWS
 const dynamoDB = new DynamoDB.DocumentClient({
   region: 'us-east-1',
-  accessKeyId: 'AKIA3GMCHGGUVH2T3PFV',
-  secretAccessKey: '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'
+  accessKeyId: '',
+  secretAccessKey: ''
 });
 
 function BirdForum() {
